@@ -58,41 +58,13 @@ const drawerWidth = 280;
 const Dashboard = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
-
   const [notificationAnchor, setNotificationAnchor] = useState(null);
+  const [notifications, setNotifications] = useState([]);
 
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
-
-  const notifications = [
-    {
-      id: 1,
-      title: "Trip created successfully",
-      time: "2 min ago",
-    },
-    {
-      id: 2,
-      title: "Weather forecast updated",
-      time: "10 min ago",
-    },
-    {
-      id: 3,
-      title: "Budget exceeded for Goa trip",
-      time: "1 hour ago",
-    },
-    {
-      id: 4,
-      title: "New destination suggestions available",
-      time: "Today",
-    },
-    {
-      id: 5,
-      title: "Manali trip completed",
-      time: "Yesterday",
-    },
-  ];
 
   const handleDrawerToggle = () => setMobileOpen(!mobileOpen);
   const handleMenu = (event) => setAnchorEl(event.currentTarget);
@@ -244,7 +216,6 @@ const Dashboard = () => {
                 >
                   {item.icon}
                 </ListItemIcon>
-
                 <ListItemText
                   primary={
                     <Typography sx={{ fontWeight: 600, fontSize: "0.9rem" }}>
@@ -354,7 +325,11 @@ const Dashboard = () => {
                   color="inherit"
                   onClick={handleNotificationOpen}
                 >
-                  <Badge badgeContent={notifications.length} color="error">
+                  <Badge
+                    badgeContent={notifications.length}
+                    color="error"
+                    invisible={notifications.length === 0}
+                  >
                     <NotificationsIcon />
                   </Badge>
                 </IconButton>
@@ -431,45 +406,45 @@ const Dashboard = () => {
                   </Typography>
                 </Box>
 
-                <Box
-                  sx={{
-                    maxHeight: 320,
-                    overflowY: "auto",
-                  }}
-                >
-                  {notifications.map((notification) => (
-                    <MenuItem
-                      key={notification.id}
-                      onClick={handleNotificationClose}
-                      sx={{
-                        py: 1.5,
-                        alignItems: "flex-start",
-                        borderBottom: "1px solid",
-                        borderColor: "grey.100",
-                      }}
-                    >
-                      <Box>
-                        <Typography
-                          variant="body2"
-                          sx={{
-                            fontWeight: 600,
-                            color: "text.primary",
-                          }}
-                        >
-                          {notification.title}
-                        </Typography>
-
-                        <Typography
-                          variant="caption"
-                          sx={{
-                            color: "text.secondary",
-                          }}
-                        >
-                          {notification.time}
-                        </Typography>
-                      </Box>
+                <Box sx={{ maxHeight: 320, overflowY: "auto" }}>
+                  {notifications.length === 0 ? (
+                    <MenuItem disabled>
+                      <Typography
+                        variant="body2"
+                        sx={{ color: "text.secondary" }}
+                      >
+                        No notifications
+                      </Typography>
                     </MenuItem>
-                  ))}
+                  ) : (
+                    notifications.map((notification) => (
+                      <MenuItem
+                        key={notification.id}
+                        onClick={handleNotificationClose}
+                        sx={{
+                          py: 1.5,
+                          alignItems: "flex-start",
+                          borderBottom: "1px solid",
+                          borderColor: "grey.100",
+                        }}
+                      >
+                        <Box>
+                          <Typography
+                            variant="body2"
+                            sx={{ fontWeight: 600, color: "text.primary" }}
+                          >
+                            {notification.title}
+                          </Typography>
+                          <Typography
+                            variant="caption"
+                            sx={{ color: "text.secondary" }}
+                          >
+                            {notification.time}
+                          </Typography>
+                        </Box>
+                      </MenuItem>
+                    ))
+                  )}
                 </Box>
               </Menu>
             </Box>
@@ -494,5 +469,3 @@ const Dashboard = () => {
     </Box>
   );
 };
-
-export default Dashboard;
